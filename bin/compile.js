@@ -1,5 +1,5 @@
 module.exports = function (inputCode) {
-  var compiler = require("../main");
+  var compiler = require("../main").regenerator;
   var sweet = require("sweet.js");
 
   var src = sweet.compile(inputCode, { noBabel: true }).code;
