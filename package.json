@@ -35,15 +35,13 @@
     "escope": "~1.0.1",
     "esprima": "git://github.com/ariya/esprima.git#harmony",
     "estraverse": "~1.5.0",
-    "extract-text-webpack-plugin": "^1.0.1",
     "install": "^0.12.2",
     "noop": "^0.2.2",
     "npm": "^6.9.0",
     "private": "~0.1.2",
     "recast": "~0.5.7",
     "style-loader": "^0.13.1",
-    "sweet.js": "1.0.3",
-    "webpack": "^4.30.0"
+    "sweet.js": "1.0.3"
   },
   "devDependencies": {
     "expect": "0.0.2",
