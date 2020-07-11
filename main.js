@@ -7,6 +7,7 @@
  * additional grant of patent rights can be found in the PATENTS file in
  * the same directory.
  */
+var compile = require('./bin/compile')
 
 var assert = require("assert");
 var path = require("path");
@@ -87,4 +88,7 @@ regenerator.runtime = {
 };
 
 // To transform a string of ES6 code, call require("regenerator")(source);
-module.exports = regenerator;
+module.exports = {
+  regenerator,
+  compile,
+}
