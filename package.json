@@ -16,7 +16,7 @@
     "desugaring",
     "ES6"
   ],
-  "version": "0.3.3",
+  "version": "0.3.4",
   "homepage": "http://github.com/facebook/regenerator",
   "repository": {
     "type": "gitnp",
@@ -39,7 +39,7 @@
     "noop": "^0.2.2",
     "npm": "^6.9.0",
     "private": "~0.1.2",
-    "recast": "~0.5.7",
+    "recast": "0.19.1",
     "style-loader": "^0.13.1",
     "sweet.js": "1.0.3"
   },
