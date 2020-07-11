@@ -1,18 +1,6 @@
-before_install:
-  - npm install --global npm@latest
-
-# Prevent Travis from running `npm ci` by default, which has trouble with
-# file: dependencies.
-install:
-  - npm install
-
 language: node_js
 node_js:
-  - "13"
-  - "12"
-  - "11"
-  - "10"
-  - "9"
-  - "8"
-
-sudo: false
+  - "0.11"
+  - "0.10"
+  - "0.8"
+  - "0.6"

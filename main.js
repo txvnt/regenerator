@@ -1,86 +1,90 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc.
+ * Copyright (c) 2013, Facebook, Inc.
+ * All rights reserved.
  *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
+ * This source code is licensed under the BSD-style license found in the
+ * https://raw.github.com/facebook/regenerator/master/LICENSE file. An
+ * additional grant of patent rights can be found in the PATENTS file in
+ * the same directory.
  */
 
-var fs = require("fs");
-var through = require("through");
+var assert = require("assert");
+var path = require("path");
+var types = require("ast-types");
+var b = types.builders;
 var transform = require("./lib/visit").transform;
 var utils = require("./lib/util");
+var recast = require("recast");
+var esprimaHarmony = require("esprima");
+var genFunExp = /\bfunction\s*\*/;
+var blockBindingExp = /\b(let|const)\s+/;
 
-function exports(file, options) {
-  var data = [];
-  return through(write, end);
+assert.ok(
+  /harmony/.test(esprimaHarmony.version),
+  "Bad esprima version: " + esprimaHarmony.version
+);
 
-  function write(buf) {
-    data.push(buf);
-  }
-
-  function end() {
-    try {
-      this.queue(compile(data.join(""), options).code);
-      this.queue(null);
-    } catch (e) { this.emit('error', e); }
-  }
-}
-
-// To get a writable stream for use as a browserify transform, call
-// require("regenerator")().
-module.exports = exports;
-
-// To include the runtime globally in the current node process, call
-// require("regenerator").runtime().
-function runtime() {
-  regeneratorRuntime = require("regenerator-runtime");
-}
-exports.runtime = runtime;
-runtime.path = require("regenerator-runtime/path.js").path;
-
-var cachedRuntimeCode;
-function getRuntimeCode() {
-  return cachedRuntimeCode ||
-    (cachedRuntimeCode = fs.readFileSync(runtime.path, "utf8"));
-}
-
-var transformOptions = {
-  presets: [require("regenerator-preset")],
-  parserOpts: {
-    sourceType: "module",
-    allowImportExportEverywhere: true,
-    allowReturnOutsideFunction: true,
-    allowSuperOutsideMethod: true,
-    strictMode: false,
-    plugins: ["*", "jsx", "flow"]
-  }
-};
-
-function compile(source, options) {
-  var result;
-
+function regenerator(source, options) {
   options = utils.defaults(options || {}, {
-    includeRuntime: false
+    supportBlockBinding: true,
   });
 
-  var result = require("@babel/core").transformSync(
-    source,
-    transformOptions
-  );
-
-  if (options.includeRuntime === true) {
-    result.code = getRuntimeCode() + "\n" + result.code;
+  var supportBlockBinding = !!options.supportBlockBinding;
+  if (supportBlockBinding) {
+    if (!blockBindingExp.test(source)) {
+      supportBlockBinding = false;
+    }
   }
 
-  return result;
+  var recastOptions = {
+    tabWidth: utils.guessTabWidth(source),
+    // Use the harmony branch of Esprima that installs with regenerator
+    // instead of the master branch that recast provides.
+    esprima: esprimaHarmony,
+    range: supportBlockBinding,
+    loc: true,
+  };
+
+  var recastAst = recast.parse(source, recastOptions);
+  var ast = recastAst.program;
+
+  // Transpile let/const into var declarations.
+  if (supportBlockBinding) {
+    var defsResult = require("defs")(ast, {
+      ast: true,
+      disallowUnknownReferences: false,
+      disallowDuplicated: false,
+      disallowVars: false,
+      loopClosures: "iife",
+    });
+
+    if (defsResult.errors) {
+      throw new Error(defsResult.errors.join("\n"));
+    }
+  }
+
+  var transformed = transform(ast, options);
+  recastAst.program = transformed.ast;
+  var appendix = "";
+
+  if (options.includeDebug) {
+    var body = recastAst.program.body;
+    body.unshift.apply(body, transformed.debugAST);
+  }
+
+  return {
+    code: recast.print(recastAst, recastOptions).code + "\n" + appendix,
+    debugInfo: transformed.debugInfo,
+  };
 }
 
-// Allow packages that depend on Regenerator to use the same copy of
-// ast-types, in case multiple versions are installed by NPM.
-exports.types = require("recast").types;
-
-// Transforms a string of source code, returning a { code, map? } result.
-exports.compile = compile;
-
 // To modify an AST directly, call require("regenerator").transform(ast).
-exports.transform = transform;
+regenerator.transform = transform;
+
+regenerator.runtime = {
+  dev: path.join(__dirname, "runtime", "vm.js"),
+  min: path.join(__dirname, "runtime", "min.js"),
+};
+
+// To transform a string of ES6 code, call require("regenerator")(source);
+module.exports = regenerator;

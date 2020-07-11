@@ -16,7 +16,7 @@
     "desugaring",
     "ES6"
   ],
-  "version": "0.14.5",
+  "version": "0.3.2",
   "homepage": "http://github.com/facebook/regenerator",
   "repository": {
     "type": "git",
@@ -25,33 +25,32 @@
   "main": "main.js",
   "bin": "bin/regenerator",
   "scripts": {
-    "test": "test/run.sh"
+    "test": "node test/run.js"
   },
   "dependencies": {
-    "@babel/core": "^7.8.4",
-    "@babel/runtime": "^7.8.4",
-    "@babel/types": "^7.8.3",
-    "commoner": "^0.10.8",
-    "private": "^0.1.8",
-    "recast": "^0.18.7",
-    "regenerator-preset": "^0.13.2",
-    "regenerator-runtime": "^0.13.5",
-    "regenerator-transform": "^0.14.5",
-    "through": "^2.3.8"
+    "ast-types": "~0.3.16",
+    "commander": "~2.1.0",
+    "css-loader": "^2.1.1",
+    "defs": "~0.6.2",
+    "escope": "~1.0.1",
+    "esprima": "git://github.com/ariya/esprima.git#harmony",
+    "estraverse": "~1.5.0",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "install": "^0.12.2",
+    "noop": "^0.2.2",
+    "npm": "^6.9.0",
+    "private": "~0.1.2",
+    "recast": "~0.5.7",
+    "style-loader": "^0.13.1",
+    "sweet.js": "1.0.3",
+    "webpack": "^4.30.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.8.4",
-    "@babel/parser": "^7.8.4",
-    "@babel/plugin-transform-modules-commonjs": "^7.8.3",
-    "@babel/plugin-transform-parameters": "^7.8.4",
-    "babel-check-duplicated-nodes": "^1.0.0",
-    "browserify": "^16.5.0",
-    "mocha": "^7.0.1",
-    "promise": "^8.0.3",
-    "semver": "^7.1.3",
-    "uglify-js": "^3.8.0"
+    "expect": "0.0.2",
+    "mocha": "^6.1.4",
+    "semver": "^6.0.0"
   },
-  "license": "MIT",
+  "license": "BSD",
   "engines": {
     "node": ">= 0.6"
   }
