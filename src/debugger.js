@@ -109,7 +109,7 @@ module.exports = {
     }
     `;
 
-    let compile = require('../unwinder/bin/compile.js');
+    let compile = require('../bin/compile.js');
     let unwindedCode = compile(code);
 
     try {
