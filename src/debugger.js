@@ -17,7 +17,7 @@ const {
   throwBreakVisitor,
   implicitTPVisitor,
   locVisitor,
-} = require('../src/staticAnalysis');
+} = require('./staticAnalysis');
 var cloneDeep = require('lodash.clonedeep');
 
 function ldDeepCopy(original) {
@@ -32,7 +32,7 @@ module.exports = {
     if (implicitTimpeoints) visitorsConfig.push(implicitTPVisitor);
     visitorsConfig.push(tryCatchVisitor);
 
-    let src = require('../index')(inputCode, visitorsConfig, true).code;
+    let src = require('./entry')(inputCode, visitorsConfig, true).code;
 
     let { code } = babel.transform(src, {
       plugins: [
