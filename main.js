@@ -8,6 +8,8 @@
  * the same directory.
  */
 var compile = require('./bin/compile')
+var delorean = require('./src/delorean')
+var vm = require('./runtime/vm')
 
 var assert = require("assert");
 var path = require("path");
@@ -91,4 +93,6 @@ regenerator.runtime = {
 module.exports = {
   regenerator,
   compile,
+  delorean,
+  vm
 }
