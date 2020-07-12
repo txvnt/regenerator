@@ -9,6 +9,7 @@
  */
 var compile = require('./bin/compile')
 var delorean = require('./src/delorean')
+var deloreanDebugger = require('./src/debugger')
 var vm = require('./runtime/vm')
 
 var assert = require("assert");
@@ -94,5 +95,6 @@ module.exports = {
   regenerator,
   compile,
   delorean,
-  vm
+  vm,
+  deloreanDebugger
 }
